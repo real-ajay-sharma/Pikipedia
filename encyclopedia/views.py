@@ -1,6 +1,7 @@
 from django.shortcuts import render
 import markdown2
 
+from django.shortcuts import redirect
 from . import util
 
 
@@ -19,4 +20,19 @@ def display(request, title):
     return render(request, "encyclopedia/content.html", {
         "content" : markdown2.markdown(content),"title" : title + " - Wiki"
     })
+
+def search(request):
+    title = request.GET.get('q','')
+    all_entries = util.list_entries()
+    if title in all_entries:
+        return redirect('display', title = title)
+    else:
+        liist = []
+        for entry in all_entries:
+            if entry.find(title) is not  -1:
+                liist.append(entry)
+        
+        return render(request, "encyclopedia/search_results.html", {
+        "entries": liist
+        })
 
