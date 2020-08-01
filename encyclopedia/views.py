@@ -1,8 +1,12 @@
 from django.shortcuts import render
 import markdown2
-
+from django import forms
 from django.shortcuts import redirect
 from . import util
+
+class NewEntryForm(forms.Form):
+    title = forms.CharField(label = "Enter Title:", max_length = 20)
+    content = forms.CharField(label = "Enter Description:")
 
 
 def index(request):
@@ -36,3 +40,7 @@ def search(request):
         "entries": liist
         })
 
+def create_new_entry(request):
+    return render(request, "encyclopedia/new_entry.html", {
+        "form" : NewEntryForm()
+    })
