@@ -5,8 +5,8 @@ from django.shortcuts import redirect
 from . import util
 
 class NewEntryForm(forms.Form):
-    title = forms.CharField(label = "Enter Title:", max_length = 20)
-    content = forms.CharField(label = "Enter Description:")
+    title = forms.CharField(label = 'Enter Title ', max_length = 20)
+    content = forms.CharField(label = 'Description', widget = forms.Textarea)
 
 
 def index(request):
@@ -41,6 +41,25 @@ def search(request):
         })
 
 def create_new_entry(request):
+    if request.method == "POST":
+        form = NewEntryForm(request.POST)
+        if form.is_valid():
+            title = form.cleaned_data["title"]
+            content = form.cleaned_data["content"]
+            if util.entry_exist(title):
+                return render(request, "encyclopedia/entry_already_exist_error.html", {
+                "title": title
+                })
+
+            util.create_new_entry(title, content)
+            return render(request, "encyclopedia/new_entry.html",{
+                "form" : NewEntryForm()
+            })
+
+        return render(request, "encyclopedia/new_entry.html",{
+                "form" : form
+        })
+
     return render(request, "encyclopedia/new_entry.html", {
         "form" : NewEntryForm()
     })

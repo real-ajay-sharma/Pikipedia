@@ -7,6 +7,12 @@
 {% block body %}
     <h1>Create new entry</h1>
 
-    {{ form }}
+    <form action = "{% url 'create_new_entry' %}" method = "POST">
+
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type = "submit">
+        
+    </form>
     
 {% endblock %}
